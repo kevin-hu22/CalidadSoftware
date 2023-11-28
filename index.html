@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+    <title>Reportes de Atencion</title>
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="content">
+            <div class="row">
+                <div class="col-5">
+                    <h4 class="titulos">Introduzca el archivo XSLX(excel)</h4>
+                    <input type="file" class="form-control" name="excel" id="input-excel">
+                </div>
+                <div class="col-5">
+                    <h4 class="titulo fecha">Fecha del Reporte<br>
+                        <span class="subtitulos fecha"></span>
+                    </h4>
+                </div>
+            </div>
+            <div class="divisor"></div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="head-links" id="head-links">
+                        <h4 class="titulos">Personal de la entidad:</h4>
+                        <div class="links">
+
+                        </div>
+                        <div class="divisor"></div>
+                        <div class="options" id="box-options">
+                            <div class="options-group">
+                                <img src="assets/profile-2.jpg" alt="profile" width="300" height="300px">
+                                <h3 id="NameUser" class="subtitulos"></h3>
+                                <div class="divisor"></div>
+                                <label for="" class="text f600">Información General</label>
+                                <ul id="list-options">
+                                    <li id="AtencionCant" class="text">Atendidos Hoy: <span></span></li>
+                                    <li id="NaturalCant" class="text">Persona Natural: <span></span></li>
+                                    <li id="JuridicaCant" class="text">Persona Jurídica: <span></span></li>
+                                </ul>
+                            </div>
+                            <div class="content-results">
+                                <div class="content-cuadro">
+                                    <div class="cuadro">
+                                        <div class="icon"> <img src="assets/ticket.png" alt="" srcset=""> </div>
+                                        <div class="cuadro-info">
+                                            <p id="exitoTurnos" class="text">Atendidos con exito en la
+                                                transaccion: <strong></strong></p>
+                                            <p id="sinexitoTurnos" class="text">Turnos sin exito por falta de doc. u
+                                                otras
+                                                ocurrencias: <strong></strong></p>
+                                        </div>
+                                    </div>
+                                    <div class="cuadro">
+                                        <div class="icon"> <img src="assets/atencion.png" alt="" srcset=""> </div>
+                                        <div class="cuadro-info">
+                                            <p id="atenTurnos" class="text">Turnos totales atentidos: <strong></strong>
+                                            </p>
+                                            <p id="abanTurnos" class="text">Turnos abandonados: <strong></strong></p>
+                                        </div>
+                                    </div>
+                                    <div class="cuadro">
+                                        <div class="icon"> <img src="assets/personal.png" alt="" srcset=""> </div>
+                                        <div class="cuadro-info">
+                                            <p id="Pjuridica" class="text">Atencion a persona Juridica:
+                                                <strong></strong>
+                                            </p>
+                                            <p id="Pnatural" class="text">Atencion a persona Natural: <strong></strong>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="cuadro">
+                                        <div class="icon"> <img src="assets/tiempo.png" alt="" srcset=""> </div>
+                                        <div class="cuadro-info">
+                                            <p id="tiempoAten" class="text">Tiempo promedio de atencion:
+                                                <strong></strong>
+                                                minutos</p>
+                                            <p id="tiempoEsp" class="text">Tiempo promedio de espera: <strong></strong>
+                                                minutos</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="content-adicionales">
+                                    <label for="" class="text f600">Información General</label>
+                                    <div class="adicionales">
+                                        <h5 class="text" id="Serv-Rut">Actualizacion de RUT:<strong></strong></h5>
+                                        <h5 class="text" id="Serv-Irut">Inscripción RUT:<strong></strong></h5>
+                                        <h5 class="text" id="Serv-OC">Objeto de Campaña:<strong></strong></h5>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js"
+        integrity="sha512-WW8/jxkELe2CAiE4LvQfwm1rajOS8PHasCCx+knHG0gBHt8EXxS6T6tJRTGuDQVnluuAvMxWF4j8SNFDKceLFg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://unpkg.com/read-excel-file@5.x/bundle/read-excel-file.min.js"></script>
+    <script src="index.js"></script>
+</body>
+
+</html>
