@@ -9,22 +9,57 @@ const boxOptions = document.getElementById("box-options");
 // NodeList que representa la lista de opciones del menú.
 const listOptions = document.querySelectorAll("ul#list-options li button");
 
-// Lectura del archivo
-//Evento que se dispara al cambiar el contenido del input de tipo archivo para cargar el archivo Excel.
+/**
+ * Manejador de eventos para el cambio en la selección de archivos.
+ */
 excelInput.addEventListener('change', async function () {
-    // Leer el contenido del archivo Excel y crear una instancia de la clase Excel
-    const content = await readXlsxFile(excelInput.files[0])
-    excel = new Excel(content)
+    try {
+        // Verificar si se seleccionó un archivo
+        if (excelInput.files.length > 0) {
+            // Obtener la extensión del archivo seleccionado
+            const fileExtension = excelInput.files[0].name.split('.').pop().toLowerCase();
 
-    // Realizar operaciones con el archivo Excel
-    fechaReporte(excel);
-    arraySinRepetidos = BuscarPersonal(excel)
-    ExcelPrinter.print('head-links', excel)
-    crearObjetosEmpleados(arraySinRepetidos)
-    extraerInfo()
-    mostrarData()
+            // Verificar si la extensión del archivo es 'xlsx' (Excel)
+            if (fileExtension === 'xlsx') {
 
-})
+                // Leer el contenido del archivo Excel y crear una instancia de la clase Excel
+                const content = await readXlsxFile(excelInput.files[0])
+                excel = new Excel(content)
+
+                // Realizar operaciones con el archivo Excel
+                fechaReporte(excel);
+                arraySinRepetidos = BuscarPersonal(excel)
+                ExcelPrinter.print('head-links', excel)
+                crearObjetosEmpleados(arraySinRepetidos)
+                extraerInfo()
+                mostrarData()
+            } else {
+                const toastContainer = document.getElementById('toast-container');
+                const toast = new bootstrap.Toast(toastContainer, {
+                    autohide: true, // Puedes ajustar esto según tus necesidades
+                });
+                toastContainer.textContent = 'Por favor, seleccione un archivo Excel (.xlsx).';
+                toast.show();
+                // Limpiar la entrada de archivos para permitir al usuario seleccionar otro archivo
+                excelInput.value = null;
+            }
+        }
+    } catch (error) {
+        // Manejar cualquier error durante la lectura del archivo
+        console.error('Error al procesar el archivo:', error.message);
+        // Mostrar un mensaje de error utilizando un Toast de Bootstrap
+        const toastContainer = document.getElementById('toast-container');
+        const toast = new bootstrap.Toast(toastContainer, {
+            autohide: false, // Puedes ajustar esto según tus necesidades
+        });
+        toastContainer.textContent = 'Error al procesar el archivo. Por favor, inténtelo de nuevo.';
+        toast.show();
+
+        // Limpiar la entrada de archivos para permitir al usuario seleccionar otro archivo
+        excelInput.value = null;
+    }
+});
+
 
 //Clase que representa el objeto Excel para manipulación de datos.
 class Excel {
@@ -184,9 +219,18 @@ function fechaReporte(excel) {
 // luego emepieza a mostrar los diferentes datos necesarios con respecto al id
 function mostrarData(id) {
     // Elementos HTML donde se mostrará la información
-    const mostraAtencion = document.querySelector("#AtencionCant span");
-    const mostraNatural = document.querySelector("#NaturalCant span");
-    const mostraJuridica = document.querySelector("#JuridicaCant span");
+    const mostraAtencion = document.querySelector("#AtencionCant span")
+    const mostraNatural = document.querySelector("#NaturalCant span")
+    const mostraJuridica = document.querySelector("#JuridicaCant span")
+    const exitoTurnos = document.querySelector("#exitoTurnos strong")
+    const sinexitoTurnos = document.querySelector("#sinexitoTurnos strong")
+    const atenTurnos = document.querySelector("#atenTurnos strong")
+    const abanTurnos = document.querySelector("#abanTurnos strong")
+    const Pjuridica = document.querySelector("#Pjuridica strong")
+    const Pnatural = document.querySelector("#Pnatural strong")
+    const tiempoAten = document.querySelector("#tiempoAten strong")
+    const tiempoEsp = document.querySelector("#tiempoEsp strong")
+
 
     // Validar la existencia y actualización de la información en el localStorage
     if (validarLocalStorage()) {
@@ -202,9 +246,34 @@ function mostrarData(id) {
             mostraAtencion.innerHTML = objeto.totalTurnos;
             mostraNatural.innerHTML = objeto.pNatural;
             mostraJuridica.innerHTML = objeto.pJuridica;
+            exitoTurnos.innerHTML = objeto.solicitudesExitosas;
+            sinexitoTurnos.innerHTML = objeto.solicitudesFallidas;
+            atenTurnos.innerHTML = objeto.atendidosExito;
+            abanTurnos.innerHTML = objeto.cantAbandonados;
+            Pjuridica.innerHTML = objeto.pJuridica;
+            Pnatural.innerHTML = objeto.pNatural;        
+            tiempoAten.innerHTML = objeto.tiempoAtencion;
+            tiempoEsp.innerHTML = objeto.tiempoEspera;
+
+
         } else {
             console.log("Índice fuera de rango");
         }
+    }
+}
+function mostrarAdicionales() {
+    if (validarLocalStorage()) {
+        // Obtener el array de objetos de empleados almacenado en localStorage
+        const arrayDeObjetos = JSON.parse(localStorage.getItem('objetosEmpleados'));
+        // servicios adicionales
+        const ServRut = document.querySelector("#ServRut strong")
+        const ServIrut = document.querySelector("#ServIrut strong")
+        const ServOC = document.querySelector("#ServOC strong")
+
+
+        ServRut.innerHTML = objeto.pJuridica;
+        ServIrut.innerHTML = objeto.pJuridica;
+        ServOC.innerHTML = objeto.pJuridica;
     }
 }
 
@@ -397,21 +466,34 @@ class ExcelPrinter {
     }
 }
 
-
+/**
+ * Función que busca y retorna los nombres de usuarios en el archivo Excel.
+ * @param {Excel} excel - Instancia de la clase Excel que representa el contenido del archivo.
+ * @returns {Array<string>} - Array con los nombres de usuarios encontrados y sin duplicados.
+ */
 function BuscarPersonal(excel) {
+    // Obtener todas las filas del archivo Excel
     const TotalRegistros = excel.rows().getRows();
+
+    // Array para almacenar los nombres de usuarios
     const nombresUsuarios = [];
+
+    // Obtener el índice de la columna 'NOMBREUSUARIO'
     const userIndex = buscarIndex('NOMBREUSUARIO');
 
+    // Iterar sobre cada fila del archivo
     TotalRegistros.forEach(fila => {
+        // Obtener el nombre de usuario de la fila
         const nombreUsuario = fila[userIndex];
-        if (nombreUsuario && nombreUsuario !== "Sin Usuario") {
-            nombresUsuarios.push(nombreUsuario);
 
+        // Verificar si el nombre de usuario existe y no es "Sin Usuario"
+        if (nombreUsuario && nombreUsuario !== "Sin Usuario") {
+            // Agregar el nombre de usuario al array
+            nombresUsuarios.push(nombreUsuario);
         }
     });
 
-    // Eliminar elementos duplicados
-    const arrayListo = Array.from(new Set(nombresUsuarios));
-    return arrayListo;
+    // Eliminar elementos duplicados en el array de nombres de usuarios
+    const nombresUnicos = Array.from(new Set(nombresUsuarios));
+    return nombresUnicos;
 }

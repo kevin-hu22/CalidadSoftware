@@ -4,15 +4,12 @@ body {
     background: #efeeee;
     font-family: 'Poppins', sans-serif;
 }
-
-/* .links .btn-Links {
-    width: 200px;
-    padding: 10px;
-    border: 1px solid #afafaf;
-    border-radius: 20px;
-    background: #607D8B;
-    color: #fff;
-} */
+div#toast-container.show {
+    background: #627181;
+    color: rgb(255 255 255);
+    border-radius: 0 0 20px 20px;
+    box-shadow: 3px 2px 11px -1px #696465;
+}
 
 .links {
     display: grid;
@@ -241,19 +238,22 @@ ul#list-options li span {
     align-items: center;
 }
 .cuadro {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 0 20px 20px 0;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 16% auto;
+    min-height: 100px;
+    align-items: center;
+    gap: 0px;
+    padding: 10px 20px;
+    justify-content: start;
 }
 .cuadro-info p {
     margin: 0;
 }
-
 .cuadro-info {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 6px;
+    gap: 3px;
+    width: 100%;
 }
