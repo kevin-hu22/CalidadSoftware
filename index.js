@@ -1,162 +1,109 @@
+//Variable que almacena la instancia de la clase Excel para manipular datos del archivo.
 let excel;
+//Array que almacena nombres de empleados sin repetir obtenidos del archivo Excel.
 let arraySinRepetidos = [];
+//Elemento del DOM que representa el input de tipo archivo para cargar el archivo Excel.
 const excelInput = document.getElementById('input-excel');
+// Elemento del DOM que representa el contenedor de opciones de visualización.
 const boxOptions = document.getElementById("box-options");
-const listOptions = document.querySelectorAll("ul#list-options li.op button");
+// NodeList que representa la lista de opciones del menú.
+const listOptions = document.querySelectorAll("ul#list-options li button");
 
 // Lectura del archivo
+//Evento que se dispara al cambiar el contenido del input de tipo archivo para cargar el archivo Excel.
 excelInput.addEventListener('change', async function () {
+    // Leer el contenido del archivo Excel y crear una instancia de la clase Excel
     const content = await readXlsxFile(excelInput.files[0])
     excel = new Excel(content)
 
+    // Realizar operaciones con el archivo Excel
     fechaReporte(excel);
     arraySinRepetidos = BuscarPersonal(excel)
-    ExcelPrinter.print('tablaInfo', 'head-links', excel)
-
+    ExcelPrinter.print('head-links', excel)
     crearObjetosEmpleados(arraySinRepetidos)
     extraerInfo()
     mostrarData()
 
 })
 
-
+//Clase que representa el objeto Excel para manipulación de datos.
 class Excel {
     constructor(content) {
         this.content = content;
     }
+    //Obtiene el encabezado del archivo Excel.
     header() {
         return this.content[0]
     }
+    // Obtiene la colección de filas del archivo Excel.
     rows() {
         return new RowsCollection(this.content.slice(1, this.content.length))
     }
+    //Obtiene la colección de columnas del archivo Excel.
     columns() {
         return new ColumnsCollection(this.content.slice(1, this.content.length))
     }
 
 }
+//Clase que representa la colección de columnas del archivo Excel.
 class ColumnsCollection {
     constructor(columns) {
         this.columns = columns;
     }
+    //Obtiene la primera columna del archivo Excel.
     firtsCol() {
         return new Col(this.columns[0])
     }
-    //trae todos los datos
+    //Obtiene una columna específica del archivo Excel.
     getCol(index) {
         return new Col(this.columns[index])
     }
+    // Obtiene todas las columnas del archivo Excel.
     getCols() {
         return this.columns
     }
 
-    // trae el conteo de valores
+    // Obtiene el conteo de columnas del archivo Excel.
     countCols() {
         return this.columns.length
     }
 }
 
-
+//Clase que representa la colección de filas del archivo Excel.
 class RowsCollection {
     constructor(rows) {
         this.rows = rows;
     }
-    // trae el primer dato
+    // Obtiene la primera fila del archivo Excel.
     firstRow() {
         return new Row(this.rows[0])
     }
 
-    //trae todos los datos
+    //Obtiene una fila específica del archivo Excel.
     getRow(index) {
         return new Row(this.rows[index])
     }
+    //Obtiene todas las filas del archivo Excel.
     getRows() {
         return this.rows
     }
-    // trae el conteo de valores
+    // Obtiene el conteo de filas del archivo Excel.
     countRows() {
         return this.rows.length
     }
 }
+// Clase que representa una fila del archivo Excel.
 class Row {
+    //Crea una instancia de la clase Row.
     constructor(row) {
         this.row = row
     }
-
-    asesorNombre(excel) {
-        const header = excel.header();
-        const index = header.indexOf('NOMBREUSUARIO');
-
-        if (index !== -1) {
-            return this.row[index];
-        } else {
-            return console.log("No se encuentra la columna de Nombre Usuario");
-        }
-    }
-    tiempoTotal() {
-        return this.row[28];
-    }
-    estado() {
-        return this.row[32];
-    }
-    tipoPersona() {
-        return this.row[8];
-    }
 }
+// Clase que representa una columna del archivo Excel.
 class Col {
+    //Crea una instancia de la clase Col.
     constructor(col) {
         this.col = col
-    }
-
-    asesorNombre(excel) {
-        const header = excel.header();
-        const index = header.indexOf('NOMBREUSUARIO');
-
-        if (index !== -1) {
-            return this.col[index];
-        } else {
-            return console.log("No se encuentra la columna 'NOMBREUSUARIO'");
-        }
-    }
-    tiempoTotal(excel) {
-        const header = excel.header();
-        const index = header.indexOf('TOTAL');
-
-        if (index !== -1) {
-            return this.col[index];
-        } else {
-            return console.log("No se encuentra la columna 'TOTAL'");
-        }
-    }
-    estado(excel) {
-        const header = excel.header();
-        const index = header.indexOf('ESTADO');
-
-        if (index !== -1) {
-            return this.col[index];
-        } else {
-            return console.log("No se encuentra la columna 'ESTADO'");
-        }
-    }
-    tipoPersona(excel) {
-        const header = excel.header();
-        const index = header.indexOf('TIPOCLIENTE');
-
-        if (index !== -1) {
-            return this.col[index];
-        } else {
-            return console.log("No se encuentra la columna 'TIPOCLIENTE'");
-        }
-    }
-    aniones(excel) {
-        const header = excel.header()
-        const index = header.indexOf('ANIOMES')
-
-        if (index !== -1) {
-            return this.col[index];
-        } else {
-            return console.log("No se encuentra la columna 'TIPOCLIENTE'");
-        }
     }
 }
 
@@ -164,6 +111,11 @@ class Col {
 
 
 // Funciones reutilizables
+
+
+// Hace una busqueda por los Header del archivo para encontrar
+// el indice de la columna que se busca, como lo recibe la variable busqueda
+// el condicional valida si se encontro devuelve el indice en caso contrario envia un mensaje por consola
 function buscarIndex(busqueda) {
     const indexHead = excel.header();
     const index = indexHead.indexOf(busqueda);
@@ -172,30 +124,78 @@ function buscarIndex(busqueda) {
     } else {
         return console.log("No se encuentra la columna " + busqueda);
     }
-    // Hace una busqueda por los Header del archivo para encontrar
-    // el indice de la columna que se busca, como lo recibe la variable busqueda
-    // el condicional valida si se encontro devuelve el indice en caso contrario envia un mensaje por consola
 }
 
-function validarLocalStorage(){
-    const objetosEmpleadosGuardados = JSON.parse(localStorage.getItem('objetosEmpleados'))
-
-    if (objetosEmpleadosGuardados && esArrayActualizado(arraySinRepetidos, objetosEmpleadosGuardados) && objetosEmpleadosGuardados.length == arraySinRepetidos.length) {
-        return true
-    }else{
-        crearObjetosEmpleados(arraySinRepetidos)
+// Valida si hay o no informacion de en LocalStorage para trabajar con ella, en caso que no se crea el objeto respectivo
+function validarLocalStorage() {
+    const objetosEmpleadosGuardados = JSON.parse(localStorage.getItem('objetosEmpleados'));
+    // Verificar si existe información en el localStorage, si está actualizada y si la longitud es igual
+    if (objetosEmpleadosGuardados && esArrayActualizado(arraySinRepetidos, objetosEmpleadosGuardados) && objetosEmpleadosGuardados.length === arraySinRepetidos.length) {
+        return true;
+    } else {
+        // Si la información no está actualizada, se crean nuevos objetos de empleados
+        crearObjetosEmpleados(arraySinRepetidos);
     }
 }
+
+// Verifica si cada nombre del arraySinRepetidos está presente en objetosEmpleadosGuardados
+function esArrayActualizado(arraySinRepetidos, objetosEmpleadosGuardados) {
+    return arraySinRepetidos.every(nombre => {
+        return objetosEmpleadosGuardados.some(objeto => objeto.nombre === nombre)
+    })
+}
+// Funciones para el tiempo
+
+//Convierte un tiempo en formato de cadena (HH:MM:SS) a segundos.
+// tiempoString - Cadena que representa el tiempo en formato HH:MM:SS.
+// Número total de segundos representados por el tiempo proporcionado.
+function convertirTiempoASegundos(tiempoString) {
+    // Dividir la cadena de tiempo en partes (horas, minutos, segundos)
+    const partesTiempo = tiempoString.split(':');
+    // Extraer horas, minutos y segundos; si no se proporciona, se asume 0
+    const horas = parseInt(partesTiempo[0], 10) || 0;
+    const minutos = parseInt(partesTiempo[1], 10) || 0;
+    const segundos = parseInt(partesTiempo[2], 10) || 0;
+    // Calcular el tiempo total en segundos
+    return horas * 3600 + minutos * 60 + segundos;
+}
+
+// recibe un array con el tiempo en segundo
+function tiempoPro(arrayTiempo) {
+    const tiempoRes = arrayTiempo.map(tiempoSegundos => tiempoSegundos / 60);
+    const tiempoPromedio = tiempoRes.reduce((total, tiempo) => total + tiempo, 0) / tiempoRes.length;
+    const resultado = tiempoPromedio.toFixed(2);
+    return resultado
+
+}
+
+// Obtiene la información de la columna correspondiente a 'FECHACREACION'.
+// Extrae la parte de la fecha hasta el primer espacio.
+// Actualiza el elemento HTML con la fecha formateada.
+function fechaReporte(excel) {
+    const indexFecha = buscarIndex('FECHACREACION')
+    const fechaCompleta = excel.columns().getCol(0).col[indexFecha].toString();
+    const formateada = fechaCompleta.slice(0, fechaCompleta.indexOf(' '));
+    document.querySelector("h4.fecha span").innerText = formateada;
+}
+
+
+// Esta funcion recibe un id como identificador del indice posicional, del empleado a buscar
+// luego emepieza a mostrar los diferentes datos necesarios con respecto al id
 function mostrarData(id) {
+    // Elementos HTML donde se mostrará la información
     const mostraAtencion = document.querySelector("#AtencionCant span");
     const mostraNatural = document.querySelector("#NaturalCant span");
     const mostraJuridica = document.querySelector("#JuridicaCant span");
 
+    // Validar la existencia y actualización de la información en el localStorage
     if (validarLocalStorage()) {
+        // Obtener el array de objetos de empleados almacenado en localStorage
         const arrayDeObjetos = JSON.parse(localStorage.getItem('objetosEmpleados'));
 
         // Verificar que el índice esté dentro del rango del array
         if (id >= 0 && id < arrayDeObjetos.length) {
+            // Obtener el objeto de empleado correspondiente al índice proporcionado
             const objeto = arrayDeObjetos[id];
 
             // Mostrar los valores en los elementos HTML
@@ -213,9 +213,9 @@ function mostrarData(id) {
 function userSelected(id) {
     const user = arraySinRepetidos[id]
     document.getElementById("NameUser").innerText = user
-    
+    // usa esta funcion para mostrar los datos del usuario selecionado pasandole el id por parametro
     mostrarData(id)
-
+    // consulta si el contenedor en el html tiene active que hace mostrar este contenedor, en caso que no lo tenga se lo añade
     if (!boxOptions.classList.contains('active')) {
         boxOptions.classList.add('active')
     }
@@ -256,18 +256,14 @@ function crearObjetosEmpleados(arraySinRepetidos) {
     return objetosEmpleados;
 }
 
-// Verifica si cada nombre en arraySinRepetidos está presente en objetosEmpleadosGuardados
-function esArrayActualizado(arraySinRepetidos, objetosEmpleadosGuardados) {
-    return arraySinRepetidos.every(nombre => {
-        return objetosEmpleadosGuardados.some(objeto => objeto.nombre === nombre)
-    })
-}
 
 
 // itera por cada objeto buscando al sujeto o usuario del cual ira llenado las variables contadoras
 // usando los indices especificos para evitar recorrer tantas veces el objeto
 // una vez consiga toda la informacion del usuario, utliza la funcion actualizarInformacionEmpleado() enviando por parametros el identificar (nombre) y los datos a actualizados
 function extraerInfo() {
+    // con las const index... se usa la funcion buscarIndex() para buscar el indice posicional que tiene dicha columna de la cual se busca la informacion
+    // se le envia por parametrp el nombre de la columna que se desea buscar
     const indexUser = buscarIndex('NOMBREUSUARIO')
     const indexEstado = buscarIndex('ESTADO')
     const indexTipPersona = buscarIndex('TIPOCLIENTE')
@@ -275,6 +271,7 @@ function extraerInfo() {
     const indexTiempoTotal = buscarIndex('TOTAL')
     const indexTiempoAten = buscarIndex('ATENCION')
     const indexTiempoEsp = buscarIndex('ESPERA')
+    // extrae todas las filas del doc y los convierte en un array de objetos
     const informacion = excel.rows().getRows();
 
     let nombreEnviar = '';
@@ -289,7 +286,7 @@ function extraerInfo() {
     let tiempoAtend = [];
     let tiempoEsp = [];
 
-
+    // se itera por cada nombre de empleados previamente filtrados en el array "arraySinRepetidos"
     for (let i = 0; i < arraySinRepetidos.length; i++) {
         turnos = 0;
         cantAtendido = 0;
@@ -303,47 +300,55 @@ function extraerInfo() {
         tiempoEsp = [];
         nombreEnviar = arraySinRepetidos[i];
 
+        // esta funcion recorre todos los objetos en busca del cual coincida con el nombre por el cual se itera
         informacion.forEach(obj => {
             const nombre = obj[indexUser];
             if (nombre === nombreEnviar) {
                 turnos += 1;
+                //esta condicion consulta si el valor que encontro es igual a "Finalizado" o no para añadir a las variables contadoras
                 if (obj[indexEstado] === "Finalizado") {
                     cantAtendido += 1;
                 } else {
                     cantAban += 1;
                 }
+                //esta condicion consulta si el valor que encontro es igual a "Persona Natural" o no para añadir a las variables contadoras
                 if (obj[indexTipPersona] === "Persona Natural") {
                     pNatural += 1;
                 } else {
                     pJuridica += 1;
                 }
+                //esta condicion consulta si el valor que encontro es igual a "Exitoso" o no para añadir a las variables contadoras
                 if (obj[indexResultado] === "Exitoso") {
                     cantExi += 1;
                 } else {
                     cantFall += 1;
                 }
                 totalTiempo.push(obj[indexTiempoTotal])
-
+                // esta condicion eviata que al array de tiempo de Atencion ingresen valores iguales a "00:00:00", para evitar errores futuros
                 if (obj[indexTiempoAten] !== "00:00:00") {
                     tiempoAtend.push(obj[indexTiempoAten])
                 }
                 tiempoEsp.push(obj[indexTiempoEsp])
             }
         })
-        
+        // luego de llenar las variables, se ejecuta la funcion para actualizar la informacion en el localStorage
         actualizarInformacionEmpleado(nombreEnviar, turnos, cantAtendido, pNatural, pJuridica, cantAban, cantExi, cantFall, totalTiempo, tiempoAtend, tiempoEsp)
     }
 }
 
+// recibe la informacion por parametros para actualizar la informacion en el Array de Objetos guardado en LocalStorage
+// la funcion cuenta con los siguientes parametros, (nombre) este es el identificador para buscar el objeto con este nombre especifico
+// por consiguiente recibe todos los datos que se van a actualizar
 function actualizarInformacionEmpleado(nombre, turnos, cantAtendido, pNatural, pJuridica, cantAban, cantExi, cantFall, totalTiempo, tiempoAtend, tiempoEsp) {
     const objetosEmpleadosGuardados = JSON.parse(localStorage.getItem('objetosEmpleados'));
     const empleado = objetosEmpleadosGuardados.find(e => e.nombre === nombre);
     let tiempoMAten = [];
 
     const tiempoMTotal = totalTiempo.map(tiempo => convertirTiempoASegundos(tiempo))
-    if(tiempoAtend.length === 0){
-         tiempoMAten = [0];
-    }else{
+    // Consulta si el array de Atencion llego vacio, de ser asi el array le asigna 0
+    if (tiempoAtend.length === 0) {
+        tiempoMAten = [0];
+    } else {
         tiempoMAten = tiempoAtend.map(tiempo => convertirTiempoASegundos(tiempo))
     }
     const tiempoMEsp = tiempoEsp.map(tiempo => convertirTiempoASegundos(tiempo))
@@ -351,10 +356,6 @@ function actualizarInformacionEmpleado(nombre, turnos, cantAtendido, pNatural, p
     const proTotal = tiempoPro(tiempoMTotal)
     const proAten = tiempoPro(tiempoMAten)
     const proEsp = tiempoPro(tiempoMEsp)
-    /* console.log("promedio de tiempo: ")
-    console.log(`El tiempo promedio de Total fue de ${proTotal} minutos.`);
-    console.log(`El tiempo promedio de atención fue de ${proAten} minutos.`);
-    console.log(`El tiempo promedio de Espera fue de ${proEsp} minutos.`); */
 
     if (empleado) {
         // Actualiza la información del empleado si se encuentra en el array
@@ -376,72 +377,11 @@ function actualizarInformacionEmpleado(nombre, turnos, cantAtendido, pNatural, p
     }
 }
 
-// Inicializar las variables para horas, minutos y segundos totales
-// Iterar sobre cada tiempo en el array      
-function sumarTiemposEnArray(arrayTiempos) {
-    let totalHoras = 0;
-    let totalMinutos = 0;
-    let totalSegundos = 0;
-
-    arrayTiempos.forEach(tiempoString => {
-        const partesTiempo = tiempoString.split(':'); // Dividir el string en partes (horas, minutos, segundos)
-
-        // Convertir cada parte a un entero
-        const horas = parseInt(partesTiempo[0], 10) || 0; // Si no se puede convertir, asume 0
-        const minutos = parseInt(partesTiempo[1], 10) || 0;
-        const segundos = parseInt(partesTiempo[2], 10) || 0;
-
-        // Sumar las horas, minutos y segundos al total
-        totalHoras += horas;
-        totalMinutos += minutos;
-        totalSegundos += segundos;
-    });
-
-    // Convertir exceso de minutos y segundos
-    totalMinutos += Math.floor(totalSegundos / 60);
-    totalSegundos %= 60;
-
-    totalHoras += Math.floor(totalMinutos / 60);
-    totalMinutos %= 60;
-
-    // Devolver el tiempo total en formato HH:MM:SS
-    const tiempoTotal = `${formatoDosDigitos(totalHoras)}:${formatoDosDigitos(totalMinutos)}:${formatoDosDigitos(totalSegundos)}`;
-
-    return tiempoTotal;
-}
-function convertirTiempoASegundos(tiempoString) {
-    const partesTiempo = tiempoString.split(':');
-    const horas = parseInt(partesTiempo[0], 10) || 0;
-    const minutos = parseInt(partesTiempo[1], 10) || 0;
-    const segundos = parseInt(partesTiempo[2], 10) || 0;
-    return horas * 3600 + minutos * 60 + segundos;
-}
-function tiempoPro(arrayTiempo){
-    const tiempoRes = arrayTiempo.map(tiempoSegundos => tiempoSegundos / 60);
-    const tiempoPromedio = tiempoRes.reduce((total, tiempo) => total + tiempo, 0) / tiempoRes.length;
-    const resultado = tiempoPromedio.toFixed(2);
-    
-    return resultado
-
-}
-
-
-// Obtiene la información de la columna correspondiente a 'FECHACREACION'.
-// Extrae la parte de la fecha hasta el primer espacio.
-// Actualiza el elemento HTML con la fecha formateada.
-function fechaReporte(excel) {
-    const indexFecha = buscarIndex('FECHACREACION')
-    const fechaCompleta = excel.columns().getCol(0).col[indexFecha].toString();
-    const formateada = fechaCompleta.slice(0, fechaCompleta.indexOf(' '));
-    document.querySelector("h4.fecha span").innerText = formateada;
-}
-
 // muestra la informacion en este caso crear los botones con los nombres de cada usuario
 class ExcelPrinter {
-    static print(tableId, headLinksId, excel) {
-        const table = document.getElementById(tableId)
+    static print(headLinksId, excel) {
         const headLinks = document.getElementById(headLinksId)
-   
+
         const personal = arraySinRepetidos;
 
         personal.forEach((User, index) => {
@@ -454,47 +394,9 @@ class ExcelPrinter {
             </g>
             </svg>${User}</button>`
         });
-
-        /* 
-        const array = [1, 4, 5, 100]
-
-                for (const index of array) {
-                    const row = excel.columns().getCol(index);
-        
-                    table.querySelector('tbody').innerHTML += `
-                <tr> 
-                    <td>${row.asesorNombre(excel)}</td>
-                    
-                </tr>
-            `;
-                } */
-        /* 
-
-                for (let index = 0; index < excel.rows().count(); index++) {
-                    const row = excel.rows().get(index);
-        
-                    table.querySelector('tbody').innerHTML += `
-                    <tr> 
-                    <td>${row.asesorNombre()}</td>
-                    <td>${row.tiempoTotal()}</td>            
-                    <td>${row.estado()}</td>
-                    <td>${row.tipoPersona()}</td>
-                    </tr>`
-                } */
     }
 }
 
-
-function CargarInfo(id) {
-    EvaluarTiempo(id)
-}
-
-function EvaluarTiempo() {
-    const listaPersonal = arraySinRepetidos;
-    console.log("Valores no repetidos: " + listaPersonal)
-
-
-}
 
 function BuscarPersonal(excel) {
     const TotalRegistros = excel.rows().getRows();
@@ -513,10 +415,3 @@ function BuscarPersonal(excel) {
     const arrayListo = Array.from(new Set(nombresUsuarios));
     return arrayListo;
 }
-
-
-
-/*  console.log('Asesor: ' + excel.rows().first().asesorNombre())
- console.log('Tiempo: ' + excel.rows().first().tiempoTotal())
- console.log('Estado: ' + excel.rows().first().estado())
- console.log('Tipo persona: ' + excel.rows().first().tipoPersona()) */

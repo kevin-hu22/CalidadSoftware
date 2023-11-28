@@ -75,7 +75,7 @@ body {
     background: #FFF;
     box-shadow: 3px 2px 11px -1px rgba(0, 0, 0, 0.28);
     text-align: center;
-    min-height: 90vh;
+    min-height: 100vh;
 }
 
 .row {
@@ -133,9 +133,7 @@ body {
     font-weight: 600;
 }
 
-.icons{
 
-}
 .info-blocks{
     display: flex;
     width: 100%;
@@ -156,7 +154,7 @@ body {
 
 .options.active {
     display: grid;
-    grid-template-columns: 250px 1fr;
+    grid-template-columns: 200px 1fr;
     grid-template-rows: auto;
     gap: 20px;
     margin: 20px 0;
@@ -208,14 +206,16 @@ ul#list-options li span {
 }
 
 .content-results {
+    border-left: 1px solid #9f9f9f;
+    padding: 0px 20px;
     height: 100%;
     display: grid;
     width: 100%;
     grid-auto-columns: 100%;
     gap: 2px;
-    grid-template-rows: 2fr 1fr;
+    grid-template-rows: 1fr 1fr;
     justify-content: center;
-    align-items: center;
+    align-items: start;
 }
 .content-adicionales {
     display: flex;
@@ -225,7 +225,7 @@ ul#list-options li span {
 }
 .adicionales {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     grid-auto-flow: row;
     grid-template-rows: auto;
     gap: 20px;
