@@ -8,7 +8,7 @@ const excelInput = document.getElementById('input-excel');
 const boxOptions = document.getElementById("box-options");
 // NodeList que representa la lista de opciones del menú.
 const listOptions = document.querySelectorAll("ul#list-options li button");
-
+const toastContainer = document.getElementById('toast-container');
 /**
  * Manejador de eventos para el cambio en la selección de archivos.
  */
@@ -34,7 +34,6 @@ excelInput.addEventListener('change', async function () {
                 extraerInfo()
                 mostrarData()
             } else {
-                const toastContainer = document.getElementById('toast-container');
                 const toast = new bootstrap.Toast(toastContainer, {
                     autohide: true, // Puedes ajustar esto según tus necesidades
                 });
@@ -48,11 +47,10 @@ excelInput.addEventListener('change', async function () {
         // Manejar cualquier error durante la lectura del archivo
         console.error('Error al procesar el archivo:', error.message);
         // Mostrar un mensaje de error utilizando un Toast de Bootstrap
-        const toastContainer = document.getElementById('toast-container');
         const toast = new bootstrap.Toast(toastContainer, {
-            autohide: false, // Puedes ajustar esto según tus necesidades
+            autohide: true, // Puedes ajustar esto según tus necesidades
         });
-        toastContainer.textContent = 'Error al procesar el archivo. Por favor, inténtelo de nuevo.';
+        toastContainer.textContent = 'Error al procesar el archivo, es posible que el formato dentro del archivo no sea el adecuado. Por favor, inténtelo de nuevo.';
         toast.show();
 
         // Limpiar la entrada de archivos para permitir al usuario seleccionar otro archivo
