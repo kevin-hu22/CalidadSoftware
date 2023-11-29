@@ -104,7 +104,7 @@ div#toast-container.show {
     line-height: normal;
 }
 .center{
-    text-align: center;
+    text-align: center !important;
 }
 .subtitulos {
     color: #000;
@@ -164,10 +164,6 @@ div#toast-container.show {
     justify-items: center;
 }
 
-h3#NameUser {
-    font-size: 20px;
-    text-align: center;
-}
 
 .options-group img {
     width: 50%;
@@ -256,4 +252,136 @@ ul#list-options li span {
     align-items: flex-start;
     gap: 3px;
     width: 100%;
+}
+
+@media (max-width:1150px){
+    .cuadro{
+        gap: 31px;
+    }
+}
+@media (max-width:1100px){
+    .content-cuadro {
+        grid-template-columns: 1fr;
+        grid-template-rows: 100px;
+    }
+    .cuadro{
+        gap: 10px;
+        padding: 0;
+    }
+}
+
+@media (max-width:768px){
+    .content{
+        padding: 20px;
+    }
+    .titulos{
+        font-size: 20px;
+    }
+    .subtitulos{
+        font-size: 14px;
+    }
+    .text{
+        font-size: 12px;
+    }
+    .content-cuadro {
+        grid-template-rows: 75px;
+    }
+    .btn {
+        gap: 3px;
+        font-size: 13px;
+    }
+    .row {
+        flex-direction: column;
+    }
+    .col-5{
+        width: 100%;
+    }
+
+}
+@media (max-width:675px){
+    .options-group img{
+        width: 20%;
+    }
+    .options.active {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows:1fr;
+        gap: 5px;
+        margin: 0;
+        padding: 0;
+    }
+    .options-group {
+        display: flex;
+        flex-direction: column;
+        padding: 0.5em;
+        align-items: center;
+    }
+    .cuadro {
+        gap: 6px;
+        padding: 0;
+        min-height: 40px;
+    }
+    .icon img {
+        width: auto;
+        height: 50px;
+    }
+    .content-cuadro{
+        gap: 12px;
+    }
+    .content-results {
+        border-left: 0;
+        padding: 0;
+        grid-auto-columns: 100%;
+        gap: 2px;
+        grid-template-rows: auto;
+    }
+    .content-adicionales{
+        gap: 12px;
+    }
+    .adicionales{
+        gap: 2px;
+    }
+    .divisor{
+        margin: 14px 0;
+    }
+}
+
+@media (max-width:425px){
+    .container{
+        padding: 1em;
+    }
+
+    .options-group{
+        width: 100%;
+    }
+    .options-group img {
+        width: auto;
+        height: 50px;
+    }
+    .icon img {
+        height: 35px;
+        width: auto;
+    }
+    .cuadro{
+        justify-content: start;
+    }
+    .btn {
+        grid-template-columns: 1fr;
+        gap: 3px;
+        padding: 1.5em .8em;
+        font-size: 13px;
+    }
+    .titulos {
+        font-size: 16px;
+    }
+}
+@media (max-width:340px){
+    .btn {
+        gap: 3px;
+        padding: 1.5em .8em;
+        font-size: 13px;
+    }
+    .btn svg {
+        display: none;
+    }
 }

@@ -9,6 +9,7 @@ const boxOptions = document.getElementById("box-options");
 // NodeList que representa la lista de opciones del menú.
 const listOptions = document.querySelectorAll("ul#list-options li button");
 const toastContainer = document.getElementById('toast-container');
+
 /**
  * Manejador de eventos para el cambio en la selección de archivos.
  */
@@ -33,6 +34,8 @@ excelInput.addEventListener('change', async function () {
                 crearObjetosEmpleados(arraySinRepetidos)
                 extraerInfo()
                 mostrarData()
+                mostrarAdicionales()
+                
             } else {
                 const toast = new bootstrap.Toast(toastContainer, {
                     autohide: true, // Puedes ajustar esto según tus necesidades
@@ -249,7 +252,7 @@ function mostrarData(id) {
             atenTurnos.innerHTML = objeto.atendidosExito;
             abanTurnos.innerHTML = objeto.cantAbandonados;
             Pjuridica.innerHTML = objeto.pJuridica;
-            Pnatural.innerHTML = objeto.pNatural;        
+            Pnatural.innerHTML = objeto.pNatural;
             tiempoAten.innerHTML = objeto.tiempoAtencion;
             tiempoEsp.innerHTML = objeto.tiempoEspera;
 
@@ -260,20 +263,42 @@ function mostrarData(id) {
     }
 }
 function mostrarAdicionales() {
-    if (validarLocalStorage()) {
-        // Obtener el array de objetos de empleados almacenado en localStorage
-        const arrayDeObjetos = JSON.parse(localStorage.getItem('objetosEmpleados'));
-        // servicios adicionales
-        const ServRut = document.querySelector("#ServRut strong")
-        const ServIrut = document.querySelector("#ServIrut strong")
-        const ServOC = document.querySelector("#ServOC strong")
+    const contenido = excel.rows().getRows();
+    const indexSerRut = buscarIndex('(SER)Actualización RUT');
+    const indexSerInsR = buscarIndex('(SER)Inscripción RUT');
+    const indexSerOC = buscarIndex('(SER)Objeto de Campaña');
 
+    const ServRut = document.querySelector("#ServRut strong");
+    const ServIrut = document.querySelector("#ServIrut strong");
+    const ServOC = document.querySelector("#ServOC strong");
+    var RUT = 0;
+    var IRUT = 0;
+    var OC = 0;
 
-        ServRut.innerHTML = objeto.pJuridica;
-        ServIrut.innerHTML = objeto.pJuridica;
-        ServOC.innerHTML = objeto.pJuridica;
-    }
+    contenido.forEach(obj => {
+        // Para el campo (SER)Actualización RUT
+        if (obj[indexSerRut] != null) {
+            RUT += 1;
+        }
+
+        // Para el campo (SER)Inscripción RUT
+        if (obj[indexSerInsR] != null) {
+            IRUT += 1;
+        }
+
+        // Para el campo (SER)Objeto de Campaña
+        if (obj[indexSerOC] != null && obj[indexSerOC] != 'Ninguno') {
+            OC += 1;
+        }
+    });
+    console.log(RUT)
+    console.log(IRUT)
+    console.log(OC)
+    ServRut.innerHTML = RUT;
+    ServIrut.innerHTML = IRUT;
+    ServOC.innerHTML = OC;
 }
+
 
 
 // Mostrar informacion de usuario selecionado
