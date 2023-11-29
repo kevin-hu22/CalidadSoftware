@@ -262,19 +262,29 @@ function mostrarData(id) {
         }
     }
 }
+/**
+ * Muestra información adicional sobre el contenido del archivo Excel.
+ */
 function mostrarAdicionales() {
+    // Obtiene las filas del archivo Excel.
     const contenido = excel.rows().getRows();
+
+    // Obtiene los índices de las columnas relevantes.
     const indexSerRut = buscarIndex('(SER)Actualización RUT');
     const indexSerInsR = buscarIndex('(SER)Inscripción RUT');
     const indexSerOC = buscarIndex('(SER)Objeto de Campaña');
 
+    // Obtiene los elementos HTML donde se mostrará la información.
     const ServRut = document.querySelector("#ServRut strong");
     const ServIrut = document.querySelector("#ServIrut strong");
     const ServOC = document.querySelector("#ServOC strong");
+
+    // Variables contadoras para cada categoría.
     var RUT = 0;
     var IRUT = 0;
     var OC = 0;
 
+    // Recorre cada fila del contenido del archivo Excel.
     contenido.forEach(obj => {
         // Para el campo (SER)Actualización RUT
         if (obj[indexSerRut] != null) {
@@ -291,14 +301,12 @@ function mostrarAdicionales() {
             OC += 1;
         }
     });
-    console.log(RUT)
-    console.log(IRUT)
-    console.log(OC)
+
+    // Muestra los resultados en los elementos HTML correspondientes.
     ServRut.innerHTML = RUT;
     ServIrut.innerHTML = IRUT;
     ServOC.innerHTML = OC;
 }
-
 
 
 // Mostrar informacion de usuario selecionado
